@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+
+</head>
+<body>
+	<canvas id="myCanvas" width="1000" height="1000"></canvas>
+<script type="text/javascript">
+var arr = [
+    { angle: 0, h: 50 },
+    { angle: 90, h: 60 },
+    { angle: 180, h: 70 },
+    { angle: 270, h: 80 },
+    { angle: 180, h: 90 }
+];
+
+	var canvas = document.getElementById('myCanvas');
+	var context = canvas.getContext('2d');
+	context.beginPath();
+	var init = { x: 100, y: 50 };
+	var dest = { x: 400, y: 500 }
+
+	drawAngleLine(init,dest);
+/*        for (var i = 0; i < arr.length; i++) {
+            context.moveTo(pos.x, pos.y);
+            pos = getAngle(context, pos.x, pos.y, arr[i].angle, arr[i].h);
+            context.lineTo(pos.x, pos.y);
+        }
+*/
+	context.stroke();
+
+function drawAngleLine(pos, dest){
+	context.moveTo(pos.x,pos.y);
+	pos = getAngle(context, pos.x, pos.y, 90, dest.y-pos.y);
+	context.lineTo(pos.x, pos.y);
+
+	context.moveTo(pos.x,pos.y);
+	pos = getAngle(context, pos.x, pos.y, 0, dest.x-pos.x);
+	context.lineTo(pos.x, pos.y);
+}
+
+function getAngle(ctx, x, y, angle, h) {
+    var radians = angle * (Math.PI / 180);
+    return { x: x + h * Math.cos(radians), y: y + h * Math.sin(radians) };
+}
+</script>
+</body>
+</html>
