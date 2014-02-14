@@ -4,7 +4,6 @@
 
 </head>
 <body>
-	<canvas id="myCanvas" width="1000" height="1000"></canvas>
 <div id="a"></div>
 	<script type="text/javascript" src="s/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
@@ -15,21 +14,43 @@ var arr = [
     { angle: 270, h: 80 },
     { angle: 180, h: 90 }
 ];
-
-	var canvas = document.getElementById('myCanvas');
-	var context = canvas.getContext('2d');
-	context.beginPath();
+var current_state = '';
 	var init = { x: 100, y: 50 };
 	var dest = { x: 400, y: 500 };
 	(function(){
-		$(document).mousemove(function(e){
-			dest = {x:e.pageX, y:e.pageY};
-			context.clearRect(0,0,canvas.width,canvas.height);
-			//setTimeout(function(){
-				drawAngleLine(init, dest);
-				context.stroke();
-			//}, 500);
+		$(document).click(function(e){
+			if(current_state===''){
+				current_state = 'drawing';
+			}
+			else if(current_state === 'drawing'){
+				current_state = '';
+				console.log('document unbind mousemove');
+				$(document).unbind('mousemove');
+			}
+			if(current_state === 'drawing'){
+				$('canvas').remove();
+				var canvasid = Math.round(Math.random()*2000);
+				init = {x:e.pageX, y:e.pageY};
+				$('body').append('<canvas id="'+canvasid+'" style="position:absolute; left:'+init.x+'px;top:'+init.y+'px"></canvas>');
+				var canvas = document.getElementById(canvasid);
+				var context = canvas.getContext('2d');
+				$(document).mousemove(function(e){
+					dest = {x:e.pageX-init.x, y:e.pageY-init.y};
+					if(dest.x < 0){
+						canvas.style.left = e.pageX+'px';
+					}
+					canvas.width = Math.abs(dest.x);
+					canvas.height = Math.abs(dest.y);
+					context.clearRect(0,0,canvas.width,canvas.height);
+					//setTimeout(function(){
+						drawAngleLine(context, {x:0,y:0}, dest);
+						context.stroke();
+					//}, 500);
+				});
+			}
+			console.log('moveclick:',e.pageX,e.pageY)
 		});
+		
 	})();
 
 	//drawAngleLine(init,dest);
@@ -40,7 +61,7 @@ var arr = [
         }
 */
 
-function drawAngleLine(pos, dest){
+function drawAngleLine(context, pos, dest){
 	context.beginPath();
 	context.moveTo(pos.x,pos.y);
 	pos = getAngle(context, pos.x, pos.y, 90, dest.y-pos.y);
