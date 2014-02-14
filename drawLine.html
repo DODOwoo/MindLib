@@ -5,6 +5,8 @@
 </head>
 <body>
 	<canvas id="myCanvas" width="1000" height="1000"></canvas>
+<div id="a"></div>
+	<script type="text/javascript" src="s/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
 var arr = [
     { angle: 0, h: 50 },
@@ -18,18 +20,28 @@ var arr = [
 	var context = canvas.getContext('2d');
 	context.beginPath();
 	var init = { x: 100, y: 50 };
-	var dest = { x: 400, y: 500 }
+	var dest = { x: 400, y: 500 };
+	(function(){
+		$(document).mousemove(function(e){
+			dest = {x:e.pageX, y:e.pageY};
+			context.clearRect(0,0,canvas.width,canvas.height);
+			//setTimeout(function(){
+				drawAngleLine(init, dest);
+				context.stroke();
+			//}, 500);
+		});
+	})();
 
-	drawAngleLine(init,dest);
+	//drawAngleLine(init,dest);
 /*        for (var i = 0; i < arr.length; i++) {
             context.moveTo(pos.x, pos.y);
             pos = getAngle(context, pos.x, pos.y, arr[i].angle, arr[i].h);
             context.lineTo(pos.x, pos.y);
         }
 */
-	context.stroke();
 
 function drawAngleLine(pos, dest){
+	context.beginPath();
 	context.moveTo(pos.x,pos.y);
 	pos = getAngle(context, pos.x, pos.y, 90, dest.y-pos.y);
 	context.lineTo(pos.x, pos.y);
