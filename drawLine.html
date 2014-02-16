@@ -1,81 +1,89 @@
 <!DOCTYPE HTML>
 <html>
  <head>
-
+<style type="text/css">
+	.plan {
+	display: inline-block;
+	position: absolute;
+	box-sizing: border-box;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px;
+	color: #ffffff;
+	/*background-color: #1abc9c;*/
+  	/*z-index: 1;*/
+  	top: 6px;
+  	width: 60px;
+  	text-align: center;
+  	background: #1abc9c; /* Old browsers */
+    
+}
+</style>
 </head>
 <body>
-<div id="a"></div>
-	<script type="text/javascript" src="s/js/jquery-1.10.2.min.js"></script>
+<div style="position:absolute; left: 300px;" class="plan" ></div>
+<div style="position:absolute; left: 50px; top:100px" class="plan" ></div>
+<div style="position:absolute; left: 500px; top:200px" class="plan"></div>
+<script type="text/javascript" src="s/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
-var arr = [
-    { angle: 0, h: 50 },
-    { angle: 90, h: 60 },
-    { angle: 180, h: 70 },
-    { angle: 270, h: 80 },
-    { angle: 180, h: 90 }
-];
-var current_state = '';
-	var init = { x: 100, y: 50 };
-	var dest = { x: 400, y: 500 };
 	(function(){
-		$(document).click(function(e){
-			if(current_state===''){
-				current_state = 'drawing';
-			}
-			else if(current_state === 'drawing'){
-				current_state = '';
-				console.log('document unbind mousemove');
-				$(document).unbind('mousemove');
-			}
-			if(current_state === 'drawing'){
-				$('canvas').remove();
-				var canvasid = Math.round(Math.random()*2000);
-				init = {x:e.pageX, y:e.pageY};
-				$('body').append('<canvas id="'+canvasid+'" style="position:absolute; left:'+init.x+'px;top:'+init.y+'px"></canvas>');
-				var canvas = document.getElementById(canvasid);
-				var context = canvas.getContext('2d');
-				$(document).mousemove(function(e){
-					dest = {x:e.pageX-init.x, y:e.pageY-init.y};
-					if(dest.x < 0){
-						canvas.style.left = e.pageX+'px';
-					}
-					canvas.width = Math.abs(dest.x);
-					canvas.height = Math.abs(dest.y);
-					context.clearRect(0,0,canvas.width,canvas.height);
-					//setTimeout(function(){
-						drawAngleLine(context, {x:0,y:0}, dest);
-						context.stroke();
-					//}, 500);
-				});
-			}
-			console.log('moveclick:',e.pageX,e.pageY)
-		});
-		
 	})();
+</script>
+<script type="text/javascript">
+	function drawAngleLine(context, pos, dest){
+		context.beginPath();
+		context.moveTo(pos.x,pos.y);
+		pos = getAngle(context, pos.x, pos.y, 90, dest.y-pos.y);
+		context.lineTo(pos.x, pos.y);
 
-	//drawAngleLine(init,dest);
-/*        for (var i = 0; i < arr.length; i++) {
-            context.moveTo(pos.x, pos.y);
-            pos = getAngle(context, pos.x, pos.y, arr[i].angle, arr[i].h);
-            context.lineTo(pos.x, pos.y);
-        }
-*/
+		context.moveTo(pos.x,pos.y);
+		pos = getAngle(context, pos.x, pos.y, 0, dest.x-pos.x);
+		context.lineTo(pos.x, pos.y);
+	}
 
-function drawAngleLine(context, pos, dest){
-	context.beginPath();
-	context.moveTo(pos.x,pos.y);
-	pos = getAngle(context, pos.x, pos.y, 90, dest.y-pos.y);
-	context.lineTo(pos.x, pos.y);
-
-	context.moveTo(pos.x,pos.y);
-	pos = getAngle(context, pos.x, pos.y, 0, dest.x-pos.x);
-	context.lineTo(pos.x, pos.y);
-}
-
-function getAngle(ctx, x, y, angle, h) {
-    var radians = angle * (Math.PI / 180);
-    return { x: x + h * Math.cos(radians), y: y + h * Math.sin(radians) };
-}
+	function getAngle(ctx, x, y, angle, h) {
+	    var radians = angle * (Math.PI / 180);
+	    return { x: x + h * Math.cos(radians), y: y + h * Math.sin(radians) };
+	}
+</script>
+<script type="text/javascript">
+	var current_state = '';
+	var start = { x: 100, y: 50 };
+	var dest = { x: 400, y: 500 };
+	var init = {x:0, y:0};
+	$('.plan').click(function(e){
+		if(current_state===''){
+			current_state = 'drawing';
+		}
+		else if(current_state === 'drawing'){
+			current_state = '';
+			console.log('document unbind mousemove');
+			$(document).unbind('mousemove');
+		}
+		if(current_state === 'drawing'){
+			$('canvas').remove();
+			var canvasid = Math.round(Math.random()*2000);
+			start = {x:e.pageX, y:e.pageY};
+			$('body').append('<canvas id="'+canvasid+'" style="position:absolute; left:'+start.x+'px;top:'+start.y+'px"></canvas>');
+			var canvas = document.getElementById(canvasid);
+			var context = canvas.getContext('2d');
+			$(document).mousemove(function(e){
+				dest = {x:e.pageX-start.x, y:e.pageY-start.y};
+				/*if(dest.x < -1){
+					canvas.style.left = e.pageX+'px';
+					init.x = dest.x;
+					dest.x = 0;
+				}*/
+				canvas.width = Math.abs(dest.x);
+				canvas.height = Math.abs(dest.y);
+				context.clearRect(0,0,canvas.width,canvas.height);
+				//setTimeout(function(){
+				drawAngleLine(context, init, dest);
+				context.stroke();
+				//}, 500);
+			});
+		}
+	});
 </script>
 </body>
 </html>
