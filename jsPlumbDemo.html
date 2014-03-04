@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<head>
+<style type="text/css">
+.item {
+        border: 1px solid black;
+        background-color: #ddddff;
+        position: absolute;
+        width: 80px;
+        height: 80px;
+      }
+ 
+      #container {
+        border: 1px solid gray;
+        width: 500px;
+        height: 500px;
+      }
+
+.title {
+  padding-top: 30px;
+  padding-left: 10px;
+  cursor: move;
+}
+    
+.connect {
+  width: 20px;
+  height: 20px;
+  background-color: green;
+  cursor: pointer;
+  border-radius: 1em;
+  margin-left: 30px;
+  margin-top: 20px;
+}   
+</style>
+<script type="text/javascript" 
+   src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js">
+</script>
+<script type="text/javascript" 
+   src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js">
+</script>
+<script type="text/javascript" src="http://jsplumbtoolkit.com/demo/js/jquery.jsPlumb-1.5.5-min.js" >
+</script>
+<script type="text/javascript">
+  jsPlumb.bind("ready", function() {
+var i = 0;
+ 
+  $('#container').dblclick(function(e) {
+    var newState = $('<div>').attr('id', 'state' + i).addClass('item');
+    
+    var title = $('<div>').addClass('title').text('State ' + i);
+    var connect = $('<div>').addClass('connect');
+    
+    newState.css({
+      'top': e.pageY,
+      'left': e.pageX
+    });
+    
+    jsPlumb.makeTarget(newState, {
+      anchor: 'Continuous'
+    });
+    
+    jsPlumb.makeSource(connect, {
+      parent: newState,
+      anchor: 'Continuous'
+    });
+    
+    newState.append(title);
+    newState.append(connect);
+    
+    $('#container').append(newState);
+    
+    i++;    
+  
+
+
+jsPlumb.draggable(newState, {
+  containment: 'parent'
+});
+ 
+newState.dblclick(function(e) {
+  jsPlumb.detachAllConnections($(this));
+  $(this).remove();
+  e.stopPropagation();
+});
+ }); 
+  });
+</script>
+</head>
+<body>
+    <div id="container"></div>
+  </body>
+</body>

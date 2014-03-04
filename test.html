@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<title>Example</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js">
+</script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js">
+</script>
+<script type="text/javascript" src="http://jsplumbtoolkit.com/demo/js/jquery.jsPlumb-1.5.5-min.js" >
+</script>
+<style>
+#block1
+{
+text-align:center;
+color:red;
+position:fixed;
+top:50px;
+right:5px;
+}
+
+#block2
+{
+text-align:center;
+color:red;
+position:fixed;
+top:50px;
+left:20px;
+}
+</style>
+<script type="text/javascript">
+function myFunction(var1,var2)
+{
+alert("Hello World!");
+}
+</script>
+</head>
+
+<body >
+<div class="node" id="block1" style="position: absolute;">Block1</div>
+<div class="node" id="block2" style="position: absolute;">Block2</div>
+<script type="text/javascript">
+
+var targetOption = {anchor:"TopCenter",
+maxConnections:-1,
+isSource:false,
+isTarget:true,
+endpoint:[ "Rectangle", { width:10, height:8 }],
+paintStyle:{fillStyle:"#66FF00"},
+setDragAllowedWhenFull:true}
+
+var sourceOption = {anchor:"BottomCenter",
+maxConnections:-1,
+isSource:true,
+isTarget:false,
+endpoint:[ "Rectangle", { width:10, height:8 }],
+paintStyle:{fillStyle:"#FFEF00"},
+setDragAllowedWhenFull:true}
+jsPlumb.bind("ready", function() {
+
+var e0 = jsPlumb.addEndpoint("block1", {
+endpoint:[ "Rectangle", { width:25, height:25 }],
+anchor:[ "Perimeter", { shape:"square", anchorCount:150 }]
+});
+
+var e1 = jsPlumb.addEndpoint("block2", {
+endpoint:[ "Rectangle", { width:25, height:25 }],
+anchor:[ "Perimeter", { shape:"square", anchorCount:150 }]
+});
+
+jsPlumb.draggable("block1");
+jsPlumb.draggable("block2");
+
+jsPlumb.connect({
+source:e0,
+target:e1,
+paintStyle:{ lineWidth:5, strokeStyle:"rgba(0, 0, 200, 0.5)" },
+anchors:["Right", "Left"],
+connector:[ "Straight" ],
+endpoint:[ "Rectangle", { width:10, height:8 } ],
+endpointStyle:{fillStyle:"rgb(243,229,0)"}
+
+});
+});
+
+jsPlumb.bind("dblclick", function(connection, originalEvent) { alert("double click on connection from " + connection.sourceId + " to " + connection.targetId); });
+
+jsPlumb.bind("endpointClick", function(endpoint, originalEvent) { alert("click on endpoint on element " + endpoint.elementId); });
+
+jsPlumb.bind("contextmenu", function(component, originalEvent) {
+alert("context menu on component " + component.id);
+originalEvent.preventDefault();
+
+var connid = component.id;
+alert("Connection ID " + connid);
+return false;
+});
+jsPlumb.draggable(jsPlumb.getSelector(".window"));
+
+</script>
+
+</body>
+</html>
