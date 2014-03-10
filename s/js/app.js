@@ -236,7 +236,9 @@ jsPlumb.ready(function() {
 
             var index = parseInt(sourceEl.getAttribute('data-control').replace('ctrl', ''), 10);
 
-            var $win = $('<div class="window" id="flowchartWindow' + index + '"><strong>' + index + '</strong></div>')
+            var left = e.pageX- $('.content .aside').width() - parseInt($('.window').width())/2;
+            var top = e.pageY - parseInt($('.window').height())/2;
+            var $win = $('<div class="window" id="flowchartWindow' + index + '" style="left:'+left+'px; top:'+top+'px"><strong>' + index + '</strong></div>')
 
             $('.main .stage').prepend($win);
 
