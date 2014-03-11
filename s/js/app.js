@@ -235,6 +235,8 @@ jsPlumb.ready(function() {
             var sourceEl = document.querySelector(e.dataTransfer.getData('selector'));
 
             var index = parseInt(sourceEl.getAttribute('data-control').replace('ctrl', ''), 10);
+            var dragPoints = sourceEl.getAttribute('drag-points');
+            var dropPoints = sourceEl.getAttribute('drop-points');
 
             var left = e.pageX- $('.content .aside').width() - parseInt($('.window').width())/2;
             var top = e.pageY - parseInt($('.window').height())/2;
@@ -243,7 +245,8 @@ jsPlumb.ready(function() {
             $('.main .stage').prepend($win);
 
             Stage.instance.doWhileSuspended(function () {
-                Stage.addEndpoint("Window" + index, ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);
+                //Stage.addEndpoint("Window" + index, ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);
+                Stage.addEndpoint("Window" + index, dragPoints.split(','), dropPoints.split(','));
             })
 
             Stage.instance.draggable(jsPlumb.getSelector("#flowchartWindow" + index), {
