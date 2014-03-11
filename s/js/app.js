@@ -109,7 +109,8 @@ jsPlumb.ready(function() {
 
         var _addEndpoints = function(toId, sourceAnchors, targetAnchors) {
             for (var i = 0; i < sourceAnchors.length; i++) {
-                var sourceUUID = toId + sourceAnchors[i];
+                var sourceUUID = toId + sourceAnchors[i]; //(new Date).getTime()
+                console.log(sourceUUID);
                 instance.addEndpoint("flowchart" + toId, sourceEndpoint, {
                     anchor: sourceAnchors[i],
                     uuid: sourceUUID
@@ -235,21 +236,22 @@ jsPlumb.ready(function() {
             var sourceEl = document.querySelector(e.dataTransfer.getData('selector'));
 
             var index = parseInt(sourceEl.getAttribute('data-control').replace('ctrl', ''), 10);
+            var windowid = index + (new Date).getTime();
             var dragPoints = sourceEl.getAttribute('drag-points');
             var dropPoints = sourceEl.getAttribute('drop-points');
 
             var left = e.pageX- $('.content .aside').width() - parseInt($('.window').width())/2;
             var top = e.pageY - parseInt($('.window').height())/2;
-            var $win = $('<div class="window" id="flowchartWindow' + index + '" style="left:'+left+'px; top:'+top+'px"><strong>' + index + '</strong></div>')
+            var $win = $('<div class="window" id="flowchartWindow' + windowid + '" style="left:'+left+'px; top:'+top+'px"><strong>' + index + '</strong></div>')
 
             $('.main .stage').prepend($win);
 
             Stage.instance.doWhileSuspended(function () {
-                //Stage.addEndpoint("Window" + index, ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);
-                Stage.addEndpoint("Window" + index, dragPoints.split(','), dropPoints.split(','));
+                Stage.addEndpoint("Window" + windowid, ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);//[0.2,0,-0.8,0]
+                //Stage.addEndpoint("Window" + windowid, dragPoints.split(','), dropPoints.split(','));
             })
 
-            Stage.instance.draggable(jsPlumb.getSelector("#flowchartWindow" + index), {
+            Stage.instance.draggable(jsPlumb.getSelector("#flowchartWindow" + windowid), {
                 grid: [20, 20]
             });
 
